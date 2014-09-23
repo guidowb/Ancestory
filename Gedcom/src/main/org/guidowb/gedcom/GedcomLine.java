@@ -8,7 +8,7 @@ class GedcomLine {
 	private String line;
 	
 	public boolean read(BufferedReader reader) throws IOException {
-		String line = reader.readLine();
+		line = reader.readLine();
 		return (line != null);
 	}
 
@@ -22,14 +22,15 @@ class GedcomLine {
 	}
 
 	private String getWord() {
+		if (line == null) return null;
 		int offset = line.indexOf(' ');
-		if (offset < 0) return line;
-		String word = line.substring(0, offset);
-		line = line.substring(offset + 1);
+		String word = (offset >= 0) ? line.substring(0, offset) : line;
+		line = (offset >= 0) ? line.substring(offset + 1) : null;
 		return word;
 	}
 	
 	private String getIdentifier() {
+		if (line == null) return null;
 		if (!line.startsWith("@")) return null;
 		return getWord().replaceAll("^@", "").replaceAll("@$", "");
 	}
