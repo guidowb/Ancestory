@@ -1,4 +1,4 @@
-package org.guidowb.gedcom.test;
+package org.guidowb.gedcom.test.system;
 
 import java.io.IOException;
 

@@ -32,7 +32,10 @@ public class GedcomWriter {
 	private void write(Gedcom gedcom) throws IOException { write(gedcom, false); }
 	private void write(Gedcom gedcom, boolean pretty) throws IOException {
 		for (GedcomRecord record : gedcom.records()) {
-			writer.write(record.toString(pretty));
+			String[] lines = record.toString(pretty).split("\n");
+			for (String line : lines) {
+				writer.write(line + "\n");
+			}
 		}
 		writer.close();
 	}
