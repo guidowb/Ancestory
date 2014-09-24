@@ -1,5 +1,10 @@
 package org.guidowb.gedcom;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class GedcomRecord {
 
 	private Gedcom gedcom;
@@ -9,7 +14,7 @@ public class GedcomRecord {
 	private String tag;
 	private String xref;
 	private String value;
-	
+
 	GedcomRecord(Gedcom gedcom, int lineno, int level, String id, String tag, String xref, String value) {
 		this.gedcom = gedcom;
 		this.lineno = lineno;
@@ -18,6 +23,70 @@ public class GedcomRecord {
 		this.tag = tag;
 		this.xref = xref;
 		this.value = value;
+	}
+
+	public int getLevel() { return level; }
+	public String getId() { return id; }
+	public String getTag() { return tag; }
+	public String getXref() { return xref; }
+	public String getValue() { return value; }
+
+	private GedcomRecord container = null;
+	private List<GedcomRecord> fieldsInFileOrder = new ArrayList<GedcomRecord>();
+	private Map<String, List<GedcomRecord>> fieldsByTag = new HashMap<String, List<GedcomRecord>>();
+
+	public GedcomRecord getContainer() { return container; }
+
+	public void addField(GedcomRecord field) {
+		field.container = this;
+		fieldsInFileOrder.add(field);
+		List<GedcomRecord> fields = fieldsByTag.get(field.getTag());
+		if (fields == null) {
+			fields = new ArrayList<GedcomRecord>();
+			fieldsByTag.put(field.getTag(), fields);
+		}
+		fields.add(field);
+	}
+	
+	public GedcomRecord getField(String tag) {
+		List<GedcomRecord> fields = fieldsByTag.get(tag);
+		if (fields == null) return null;
+		return fields.get(0);	
+	}
+
+	public Iterable<GedcomRecord> getFields(String tag) {
+		Iterable<GedcomRecord> fields = fieldsByTag.get(tag);
+		if (fields == null) return new ArrayList<GedcomRecord>();
+		return fields;
+	}
+
+	public String getName() {
+		GedcomRecord nameField = getField("NAME");
+		if (nameField == null) return null;
+		String name = nameField.getValue().replaceAll("/", "");
+		return name;
+	}
+
+	@SuppressWarnings("rawtypes")
+	private Map<Class, GedcomDecoration> decorations = new HashMap<Class, GedcomDecoration>();
+
+	@SuppressWarnings("unchecked")
+	public <D extends GedcomDecoration> D getDecoration(Class<D> decorationClass) {
+		D decoration = (D) decorations.get(decorationClass);
+		if (decoration != null) return decoration;
+		try {
+			decoration = decorationClass.newInstance();
+			decorations.put(decorationClass, decoration);
+			return decoration;
+		} catch (Exception e) {
+			// If we get an exception here, it really means that someone has written code
+			// to request a decoration that isn't in the class path. I don't want to expect
+			// all callers to have to deal with that eventuality or declare these types
+			// of exceptions. So I'm translating it to a RuntimeException here. This is
+			// a case where the best thing to do might be to just crash, rather than
+			// pollute all of the rest of the code.
+			throw new RuntimeException(e);
+		}
 	}
 
 	public boolean isContinuation() {
