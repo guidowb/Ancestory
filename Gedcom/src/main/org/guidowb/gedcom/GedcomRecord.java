@@ -88,6 +88,10 @@ public class GedcomRecord {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public <D extends GedcomDecoration> void addDecoration(D decoration) {
+		decorations.put(decoration.getClass(), decoration);
+	}
 
 	public boolean isContinuation() {
 		return (tag.equals("CONC") || tag.equals("CONT"));
