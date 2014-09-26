@@ -20,18 +20,15 @@ public class NameIndex implements GedcomIndex {
 	}
 
 	public static class Name extends GedcomDecoration implements Comparable<Name> {
-		public static class Surname {
-			String original;
-			String prefix;
-			String root;
-		}
-		String nickname = null;
-		String givenname = null;
-		String prefix = null;
-		Surname surname = new Surname();
-		List<Surname> alternates = null;
-		String postfix = null;
-		GedcomRecord record;
+		private String prefix = null;
+		private String givenname = null;
+		private String nickname = null;
+		private String surname_prefix = null;
+		private String surname = null;
+		private List<Name> aliases = null;
+		private Name isAliasFor = null;
+		private String postfix = null;
+		private GedcomRecord record;
 
 		private Name(GedcomRecord record) { this.record = record; }
 		
@@ -40,15 +37,14 @@ public class NameIndex implements GedcomIndex {
 			String original = record.getField("NAME").getValue();
 			String[] parts = original.split("/");
 			if (parts.length > 0) name.givenname = parts[0].trim();
-			if (parts.length > 1) name.surname.original = parts[1].trim();
+			if (parts.length > 1) name.surname = parts[1].trim();
 			if (parts.length > 2) name.postfix = parts[2].trim();
 			if (parts.length > 3) throw new NameFormatException(original, "too many slashes");
 			if (name.givenname != null && name.givenname.equals("NN")) name.givenname = null;
-			if (name.surname.original != null && name.surname.original.equals("NN")) name.surname.original = null;
+			if (name.surname != null && name.surname.equals("NN")) name.surname = null;
 			extractNickname(name);
-			extractPrefix(name);
-			extractAlternates(name);
-			splitSurname(name.surname);
+			extractAliases(name);
+			extractSurnamePrefix(name);
 			return name;
 		}
 		
@@ -60,43 +56,42 @@ public class NameIndex implements GedcomIndex {
 				name.nickname = original.replaceAll("^.*\\(", "").replaceAll("\\).*$", "");
 		}
 		
-		private static void extractPrefix(Name name) {
-			String original = name.givenname;
+		private static void extractAliases(Name name) {
+			String original = name.surname;
 			if (original == null) return;
-			name.givenname = null;
-			String parts[] = original.split(" ");
-			for (String part : parts) {
-				if (part.isEmpty()) continue;
-				if (part.endsWith(".") || isLowerCase(part)) name.prefix = (name.prefix == null) ? part : (name.prefix + " " + part);
-				else name.givenname = (name.givenname == null) ? part : (name.givenname + " " + part);
-			}
-		}
-		
-		private static void extractAlternates(Name name) {
-			String original = name.surname.original;
-			if (original == null) return;
-			name.surname.original = original.replaceAll("\\(.*\\)", "");
+			name.surname = original.replaceAll("\\(.*\\)", "");
 			if (original.contains("(")) {
-				name.alternates = new ArrayList<Surname>();
-				String[] alternates = original.replaceAll("^.*\\(", "").replaceAll("\\).*$", "").split(", ");
-				for (String alternate : alternates) {
-					Surname surname = new Surname();
-					surname.original = alternate;
-					splitSurname(surname);
-					name.alternates.add(surname);
-				}
+				name.aliases = new ArrayList<Name>();
+				String[] aliases = original.replaceAll("^.*\\(", "").replaceAll("\\).*$", "").split(", ");
+				for (String alias : aliases) addAlias(name, alias);
 			}
 		}
-		
-		private static void splitSurname(Surname surname) {
-			if (surname.original == null) return;
-			String parts[] = surname.original.split(" ");
+
+		private static void addAlias(Name name, String alternateSurname) {
+			Name alias = new Name(name.record);
+			alias.prefix = name.prefix;
+			alias.givenname = name.givenname;
+			alias.nickname = name.nickname;
+			alias.surname_prefix = null;
+			alias.surname = alternateSurname;
+			alias.isAliasFor = name;
+			alias.postfix = null;
+			alias.record = name.record;
+			extractSurnamePrefix(alias);
+			name.aliases.add(alias);
+		}
+	
+		private static void extractSurnamePrefix(Name name) {
+			if (name.surname_prefix != null) return;
+			if (name.surname == null) return;
+			String parts[] = name.surname.split(" ");
+			name.surname = null;
 			boolean inPrefix = parts.length > 1;
 			for (String part : parts) {
 				if (part.isEmpty()) continue;
 				if (!isLowerCase(part)) inPrefix = false;
-				if (inPrefix) surname.prefix = (surname.prefix == null) ? part : (surname.prefix + " " + part);
-				else surname.root = (surname.root == null) ? part : (surname.root + " " + part);
+				if (inPrefix) name.surname_prefix = (name.surname_prefix == null) ? part : (name.surname_prefix + " " + part);
+				else name.surname = (name.surname == null) ? part : (name.surname + " " + part);
 			}
 		}
 
@@ -106,19 +101,17 @@ public class NameIndex implements GedcomIndex {
 		
 		public String toString() {
 			String out = "";
-			if (surname.root != null) out = surname.root; else out = "NN";
-			if (surname.prefix != null) out += ", " + surname.prefix;
-			if (alternates != null) for (Surname alternate : alternates) {
-				out += " (" + alternate.root;
-				if (alternate.prefix != null) out += ", " + alternate.prefix;
-				out += ")";
-			}
+			if (isAlias()) out += "<alias> ";
+			if (surname != null) out += surname; else out += "NN";
+			if (surname_prefix != null) out += ", " + surname_prefix;
 			if (givenname != null) out += ", " + givenname; else out += ", NN";
 			if (postfix != null) out += " " + postfix;
 			if (nickname != null) out += " (" + nickname + ")";
 			if (prefix != null) out += ", " + prefix;
 			return out;
 		}
+
+		public boolean isAlias() { return isAliasFor != null; }
 
 		private int compareStrings(String s1, String s2) {
 			if (s1 == null)
@@ -130,8 +123,8 @@ public class NameIndex implements GedcomIndex {
 		
 		@Override
 		public int compareTo(Name other) {
-			int result = compareStrings(this.surname.root, other.surname.root);
-			if (result == 0) result = compareStrings(this.surname.prefix, other.surname.prefix);
+			int result = compareStrings(this.surname, other.surname);
+			if (result == 0) result = compareStrings(this.surname_prefix, other.surname_prefix);
 			if (result == 0) result = compareStrings(this.givenname, other.givenname);
 			if (result == 0) result = compareStrings(this.postfix, other.postfix);
 			if (result == 0) result = this.record.compareTo(other.record);
@@ -145,6 +138,7 @@ public class NameIndex implements GedcomIndex {
 		Name name = Name.parseName(record);
 		record.addDecoration(name);
 		individualsByName.put(name, record);
+		if (name.aliases != null) for (Name alias : name.aliases) individualsByName.put(alias, record);
 	}
 	
 	public Iterable<GedcomRecord> individuals() {
