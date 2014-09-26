@@ -136,4 +136,10 @@ public class GedcomRecord {
 		}
 		return value;
 	}
+
+	public int compareTo(GedcomRecord other) {
+		if (this.lineno < other.lineno) return -1;
+		if (this.lineno > other.lineno) return 1;
+		return 0;
+	}
 }
