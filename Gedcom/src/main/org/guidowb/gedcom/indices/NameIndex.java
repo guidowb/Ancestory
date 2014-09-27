@@ -2,8 +2,8 @@ package org.guidowb.gedcom.indices;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.guidowb.gedcom.GedcomDecoration;
 import org.guidowb.gedcom.GedcomIndex;
@@ -11,7 +11,9 @@ import org.guidowb.gedcom.GedcomRecord;
 
 public class NameIndex implements GedcomIndex {
 
-	private SortedMap<Name, GedcomRecord> individualsByName = new TreeMap<Name, GedcomRecord>();
+	private SortedSet<Name> names = new TreeSet<Name>();
+	private SortedSet<Name> individuals = new TreeSet<Name>();
+	private static final SortedSet<Name> emptySet = new TreeSet<Name>();
 
 	@SuppressWarnings("serial")
 	public static class NameFormatException extends RuntimeException {
@@ -51,18 +53,18 @@ public class NameIndex implements GedcomIndex {
 		private static void extractNickname(Name name) {
 			String original = name.givenname;
 			if (original == null) return;
-			name.givenname = original.replaceAll("\\(.*\\)", "");
+			name.givenname = original.replaceAll(" \\(.*\\)", "");
 			if (original.contains("("))
-				name.nickname = original.replaceAll("^.*\\(", "").replaceAll("\\).*$", "");
+				name.nickname = original.replaceAll("^.* \\(", "").replaceAll("\\).*$", "");
 		}
 		
 		private static void extractAliases(Name name) {
 			String original = name.surname;
 			if (original == null) return;
-			name.surname = original.replaceAll("\\(.*\\)", "");
+			name.surname = original.replaceAll(" \\(.*\\)", "");
 			if (original.contains("(")) {
 				name.aliases = new ArrayList<Name>();
-				String[] aliases = original.replaceAll("^.*\\(", "").replaceAll("\\).*$", "").split(", ");
+				String[] aliases = original.replaceAll("^.* \\(", "").replaceAll("\\).*$", "").split(", ");
 				for (String alias : aliases) addAlias(name, alias);
 			}
 		}
@@ -101,7 +103,6 @@ public class NameIndex implements GedcomIndex {
 		
 		public String toString() {
 			String out = "";
-			if (isAlias()) out += "<alias> ";
 			if (surname != null) out += surname; else out += "NN";
 			if (surname_prefix != null) out += ", " + surname_prefix;
 			if (givenname != null) out += ", " + givenname; else out += ", NN";
@@ -112,6 +113,7 @@ public class NameIndex implements GedcomIndex {
 		}
 
 		public boolean isAlias() { return isAliasFor != null; }
+		public Iterable<Name> getAliases() { return (aliases != null) ? aliases : emptySet; }
 
 		private int compareStrings(String s1, String s2) {
 			if (s1 == null)
@@ -137,11 +139,11 @@ public class NameIndex implements GedcomIndex {
 		if (!record.getTag().equals("INDI")) return;
 		Name name = Name.parseName(record);
 		record.addDecoration(name);
-		individualsByName.put(name, record);
-		if (name.aliases != null) for (Name alias : name.aliases) individualsByName.put(alias, record);
+		individuals.add(name);
+		names.add(name);
+		if (name.aliases != null) for (Name alias : name.aliases) names.add(alias);
 	}
 	
-	public Iterable<GedcomRecord> individuals() {
-		return individualsByName.values();
-	}
+	public Iterable<Name> names() { return names; }
+	public Iterable<Name> individuals() { return individuals; }
 }
