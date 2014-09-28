@@ -68,19 +68,19 @@ public class GedcomRecord {
 	}
 
 	@SuppressWarnings("rawtypes")
-	private Map<Class, GedcomDecoration> decorations = new HashMap<Class, GedcomDecoration>();
+	private Map<Class, GedcomDecorator> decorators = new HashMap<Class, GedcomDecorator>();
 
 	@SuppressWarnings("unchecked")
-	public <D extends GedcomDecoration> D getDecoration(Class<D> decorationClass) {
-		D decoration = (D) decorations.get(decorationClass);
-		if (decoration != null) return decoration;
+	public <D extends GedcomDecorator> D getDecorator(Class<D> decoratorClass) {
+		D decorator = (D) decorators.get(decoratorClass);
+		if (decorator != null) return decorator;
 		try {
-			decoration = decorationClass.newInstance();
-			decorations.put(decorationClass, decoration);
-			return decoration;
+			decorator = decoratorClass.newInstance();
+			decorators.put(decoratorClass, decorator);
+			return decorator;
 		} catch (Exception e) {
 			// If we get an exception here, it really means that someone has written code
-			// to request a decoration that isn't in the class path. I don't want to expect
+			// to request a decorator that isn't in the class path. I don't want to expect
 			// all callers to have to deal with that eventuality or declare these types
 			// of exceptions. So I'm translating it to a RuntimeException here. This is
 			// a case where the best thing to do might be to just crash, rather than
@@ -89,8 +89,8 @@ public class GedcomRecord {
 		}
 	}
 	
-	public <D extends GedcomDecoration> void addDecoration(D decoration) {
-		decorations.put(decoration.getClass(), decoration);
+	public <D extends GedcomDecorator> void addDecorator(D decorator) {
+		decorators.put(decorator.getClass(), decorator);
 	}
 
 	public boolean isContinuation() {
