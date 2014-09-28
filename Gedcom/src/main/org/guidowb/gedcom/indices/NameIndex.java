@@ -1,6 +1,7 @@
 package org.guidowb.gedcom.indices;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -35,8 +36,18 @@ public class NameIndex implements GedcomIndex {
 		private Name(GedcomRecord record) { this.record = record; }
 		
 		public static Name parseName(GedcomRecord record) {
+			Iterator<GedcomRecord> nameFields = record.getFields("NAME").iterator();
+			if (!nameFields.hasNext()) return null;
+			Name name = parseName(record, nameFields.next().getValue());
+			while (nameFields.hasNext()) {
+				if (name.aliases == null) name.aliases = new ArrayList<Name>();
+				name.aliases.add(parseName(record, nameFields.next().getValue()));
+			}
+			return name;
+		}
+
+		private static Name parseName(GedcomRecord record, String original) {
 			Name name = new Name(record);
-			String original = record.getField("NAME").getValue();
 			String[] parts = original.split("/");
 			if (parts.length > 0) name.givenname = parts[0].trim();
 			if (parts.length > 1) name.surname = parts[1].trim();
@@ -49,7 +60,7 @@ public class NameIndex implements GedcomIndex {
 			extractSurnamePrefix(name);
 			return name;
 		}
-		
+
 		private static void extractNickname(Name name) {
 			String original = name.givenname;
 			if (original == null) return;
