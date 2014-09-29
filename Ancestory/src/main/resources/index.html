@@ -5,14 +5,13 @@
 	<title>Ancestory</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js"></script>
-	<script src="js/controllers.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular-route.min.js"></script>
+	<script src="js/ancestoryApp.js"></script>
+	<script src="js/namelistController.js"></script>
 </head>
-<body ng-controller="NameListCtrl">
+<body>
 
-	<ul>
-		<li ng-repeat="name in names">
-			{{name.normalized}}
-		</li>
-	</ul>
+	<div ng-view></div>
+
 </body>
 </html>
