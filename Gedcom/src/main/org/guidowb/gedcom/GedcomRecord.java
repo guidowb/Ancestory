@@ -76,7 +76,7 @@ public class GedcomRecord {
 		if (decorator != null) return decorator;
 		try {
 			decorator = decoratorClass.newInstance();
-			decorators.put(decoratorClass, decorator);
+			addDecorator(decorator);
 			return decorator;
 		} catch (Exception e) {
 			// If we get an exception here, it really means that someone has written code
@@ -90,6 +90,7 @@ public class GedcomRecord {
 	}
 	
 	public <D extends GedcomDecorator> void addDecorator(D decorator) {
+		decorator.setRecord(this);
 		decorators.put(decorator.getClass(), decorator);
 	}
 

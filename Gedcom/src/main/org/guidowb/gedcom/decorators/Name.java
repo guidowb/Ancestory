@@ -17,15 +17,12 @@ public class Name extends GedcomDecorator implements Comparable<Name> {
 	private List<Name> aliases = null;
 	private Name isAliasFor = null;
 	private String postfix = null;
-	private GedcomRecord record;
 
 	public String getOriginal() { return original; }
 	public String getNormalized() { return toString(); }
 
 	public boolean isAlias() { return isAliasFor != null; }
 	public Iterable<Name> aliases() { return (aliases != null) ? aliases : emptyList; }
-
-	private Name(GedcomRecord record) { this.record = record; }
 	
 	@SuppressWarnings("serial")
 	public static class NameFormatException extends RuntimeException {
@@ -36,16 +33,16 @@ public class Name extends GedcomDecorator implements Comparable<Name> {
 	public static Name parseName(GedcomRecord record) {
 		Iterator<GedcomRecord> nameFields = record.getFields("NAME").iterator();
 		if (!nameFields.hasNext()) return null;
-		Name name = parseName(record, nameFields.next().getValue());
+		Name name = parseName(nameFields.next().getValue());
 		while (nameFields.hasNext()) {
 			if (name.aliases == null) name.aliases = new ArrayList<Name>();
-			name.aliases.add(parseName(record, nameFields.next().getValue()));
+			name.aliases.add(parseName(nameFields.next().getValue()));
 		}
 		return name;
 	}
 
-	private static Name parseName(GedcomRecord record, String original) {
-		Name name = new Name(record);
+	private static Name parseName(String original) {
+		Name name = new Name();
 		name.original = original;
 		String[] parts = original.split("/");
 		if (parts.length > 0) name.givenname = parts[0].trim();
@@ -80,7 +77,7 @@ public class Name extends GedcomDecorator implements Comparable<Name> {
 	}
 
 	private static void addAlias(Name name, String alternateSurname) {
-		Name alias = new Name(name.record);
+		Name alias = new Name();
 		alias.prefix = name.prefix;
 		alias.givenname = name.givenname;
 		alias.nickname = name.nickname;
