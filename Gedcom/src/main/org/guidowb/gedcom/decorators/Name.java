@@ -18,6 +18,8 @@ public class Name extends GedcomDecorator implements Comparable<Name> {
 	private Name isAliasFor = null;
 	private String postfix = null;
 
+	private static final List<Name> emptyList = new ArrayList<Name>();
+
 	public String getOriginal() { return original; }
 	public String getNormalized() { return toString(); }
 
@@ -30,7 +32,16 @@ public class Name extends GedcomDecorator implements Comparable<Name> {
 		NameFormatException(String name, String reason) { super("Illegal name format (" + reason + "): " + name); }
 	}
 
-	public static Name parseName(GedcomRecord record) {
+	public static synchronized Name getName(GedcomRecord record) {
+		if (!record.getTag().equals("INDI")) return null;
+		Name name = record.getDecorator(Name.class);
+		if (name != null) return name;
+		name = parseName(record);
+		if (name != null) record.addDecorator(name);
+		return name;
+	}
+
+	private static Name parseName(GedcomRecord record) {
 		Iterator<GedcomRecord> nameFields = record.getFields("NAME").iterator();
 		if (!nameFields.hasNext()) return null;
 		Name name = parseName(nameFields.next().getValue());
@@ -118,8 +129,6 @@ public class Name extends GedcomDecorator implements Comparable<Name> {
 		if (prefix != null) out += ", " + prefix;
 		return out;
 	}
-
-	private static final List<Name> emptyList = new ArrayList<Name>();
 
 	private int compareStrings(String s1, String s2) {
 		if (s1 == null)

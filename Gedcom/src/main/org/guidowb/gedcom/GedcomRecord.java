@@ -72,21 +72,7 @@ public class GedcomRecord {
 
 	@SuppressWarnings("unchecked")
 	public <D extends GedcomDecorator> D getDecorator(Class<D> decoratorClass) {
-		D decorator = (D) decorators.get(decoratorClass);
-		if (decorator != null) return decorator;
-		try {
-			decorator = decoratorClass.newInstance();
-			addDecorator(decorator);
-			return decorator;
-		} catch (Exception e) {
-			// If we get an exception here, it really means that someone has written code
-			// to request a decorator that isn't in the class path. I don't want to expect
-			// all callers to have to deal with that eventuality or declare these types
-			// of exceptions. So I'm translating it to a RuntimeException here. This is
-			// a case where the best thing to do might be to just crash, rather than
-			// pollute all of the rest of the code.
-			throw new RuntimeException(e);
-		}
+		return (D) decorators.get(decoratorClass);
 	}
 	
 	public <D extends GedcomDecorator> void addDecorator(D decorator) {

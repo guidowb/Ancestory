@@ -16,8 +16,8 @@ public class NameIndex implements GedcomIndex {
 	@Override
 	public void addRecord(GedcomRecord record) {
 		if (!record.getTag().equals("INDI")) return;
-		Name name = Name.parseName(record);
-		record.addDecorator(name);
+		Name name = Name.getName(record);
+		if (name == null) return;
 		individuals.add(name);
 		names.add(name);
 		for (Name alias : name.aliases()) names.add(alias);
