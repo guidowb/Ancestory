@@ -14,7 +14,7 @@ public class DiffFile {
 
 	public static void main(String[] args) throws IOException {
 		if (args.length < 1) {
-			System.out.println("Usage: DiffFile <gedfile>");
+			System.err.println("Usage: DiffFile <gedfile>");
 			System.exit(1);
 		}
 		final String filename = args[0];

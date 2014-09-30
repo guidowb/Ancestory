@@ -10,7 +10,7 @@ public class PrintFile {
 
 	public static void main(String[] args) throws IOException {
 		if (args.length < 1) {
-			System.out.println("Usage: PrintFile <gedfile>");
+			System.err.println("Usage: PrintFile <gedfile>");
 			System.exit(1);
 		}
 		Gedcom gedcom = GedcomReader.load(args[0]);

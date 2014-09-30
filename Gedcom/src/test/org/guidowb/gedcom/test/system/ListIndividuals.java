@@ -12,15 +12,15 @@ public class ListIndividuals {
 
 	public static void main(String[] args) throws IOException {
 		if (args.length < 1) {
-			System.out.println("Usage: ListIndividuals <gedfile>");
+			System.err.println("Usage: ListIndividuals <gedfile>");
 			System.exit(1);
 		}
 		Gedcom gedcom = GedcomReader.load(args[0]);
 		for (Individual individual : gedcom.getIndex(NameIndex.class).individuals()) {
 			Name name = individual.getName();
-			System.out.println(name.toString());
+			System.out.println(name.getCanonical());
 			for (Name alias : name.aliases()) {
-				System.out.println("    " + alias.toString());
+				System.out.println("    " + alias.getCanonical());
 			}
 		}
 	}

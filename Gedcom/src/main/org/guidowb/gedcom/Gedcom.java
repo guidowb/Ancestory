@@ -58,4 +58,8 @@ public class Gedcom {
 	public Iterable<GedcomRecord> records() {
 		return recordsInFileOrder;
 	}
+	
+	public GedcomRecord getRecord(String id) {
+		return recordsById.get(id);
+	}
 }

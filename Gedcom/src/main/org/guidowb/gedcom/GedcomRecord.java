@@ -60,6 +60,28 @@ public class GedcomRecord {
 		return fields;
 	}
 
+	private GedcomRecord resolve(GedcomRecord record) {
+		if (record == null) return null;
+		String xref = record.getXref();
+		while (xref != null) {
+			record = gedcom.getRecord(xref);
+			xref = record.getXref();
+		}
+		return record;
+	}
+
+	public GedcomRecord resolveField(String tag) {
+		return resolve(getField(tag));
+	}
+
+	public List<GedcomRecord> resolveFields(String tag) {
+		List<GedcomRecord> fields = new ArrayList<GedcomRecord>();
+		for (GedcomRecord field : getFields(tag)) {
+			fields.add(resolve(field));
+		}
+		return fields;
+	}
+
 	public String getName() {
 		GedcomRecord nameField = getField("NAME");
 		if (nameField == null) return null;

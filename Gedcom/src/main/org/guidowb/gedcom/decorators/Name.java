@@ -21,7 +21,29 @@ public class Name extends GedcomDecorator implements Comparable<Name> {
 	private static final List<Name> emptyList = new ArrayList<Name>();
 
 	public String getOriginal() { return original; }
-	public String getNormalized() { return toString(); }
+
+	public String getNormalized() {
+		String out = "";
+		if (prefix != null) out += prefix + " ";
+		if (givenname != null) out += givenname + " "; else out += "NN ";
+		if (nickname != null) out += "(" + nickname + ") ";
+		if (surname_prefix != null) out += surname_prefix + " ";
+		if (surname != null) out += surname; else out += "NN";
+		if (postfix != null) out += " " + postfix;
+		return out;
+
+	}
+
+	public String getCanonical() {
+		String out = "";
+		if (surname != null) out += surname; else out += "NN";
+		if (surname_prefix != null) out += ", " + surname_prefix;
+		if (givenname != null) out += ", " + givenname; else out += ", NN";
+		if (postfix != null) out += " " + postfix;
+		if (nickname != null) out += " (" + nickname + ")";
+		if (prefix != null) out += ", " + prefix;
+		return out;
+	}
 
 	public boolean isAlias() { return isAliasFor != null; }
 	public Iterable<Name> aliases() { return (aliases != null) ? aliases : emptyList; }
@@ -119,17 +141,6 @@ public class Name extends GedcomDecorator implements Comparable<Name> {
 		return Character.isLowerCase(part.replaceAll("^[\\(']", "").charAt(0));
 	}
 	
-	public String toString() {
-		String out = "";
-		if (surname != null) out += surname; else out += "NN";
-		if (surname_prefix != null) out += ", " + surname_prefix;
-		if (givenname != null) out += ", " + givenname; else out += ", NN";
-		if (postfix != null) out += " " + postfix;
-		if (nickname != null) out += " (" + nickname + ")";
-		if (prefix != null) out += ", " + prefix;
-		return out;
-	}
-
 	private int compareStrings(String s1, String s2) {
 		if (s1 == null)
 			if (s2 == null) return 0;
