@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.guidowb.gedcom.Gedcom;
 import org.guidowb.gedcom.GedcomReader;
+import org.guidowb.gedcom.decorators.Individual;
 import org.guidowb.gedcom.decorators.Name;
 import org.guidowb.gedcom.indices.NameIndex;
 
@@ -15,12 +16,12 @@ public class ListIndividuals {
 			System.exit(1);
 		}
 		Gedcom gedcom = GedcomReader.load(args[0]);
-		for (Name name : gedcom.getIndex(NameIndex.class).individuals()) {
+		for (Individual individual : gedcom.getIndex(NameIndex.class).individuals()) {
+			Name name = individual.getName();
 			System.out.println(name.toString());
 			for (Name alias : name.aliases()) {
 				System.out.println("    " + alias.toString());
 			}
 		}
 	}
-
 }
