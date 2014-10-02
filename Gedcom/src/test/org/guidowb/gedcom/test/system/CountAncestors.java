@@ -14,7 +14,7 @@ public class CountAncestors {
 
 	public static void main(String[] args) throws IOException {
 		if (args.length < 2) {
-			System.err.println("Usage: FindAncestors <gedfile> <individual>");
+			System.err.println("Usage: CountAncestors <gedfile> <individual>");
 			System.exit(1);
 		}
 		Gedcom gedcom = GedcomReader.load(args[0]);
