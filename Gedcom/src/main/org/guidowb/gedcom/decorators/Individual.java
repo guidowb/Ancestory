@@ -10,6 +10,7 @@ public class Individual extends GedcomDecorator {
 	private Name name = null;
 	private Ancestry ancestry = null;
 	private List<Individual> children = null;
+	private AncestorCount ancestorCount = null;
 
 	public synchronized Name getName() {
 		if (name != null) return name;
@@ -21,6 +22,12 @@ public class Individual extends GedcomDecorator {
 		if (ancestry != null) return ancestry;
 		ancestry = Ancestry.getAncestry(record);
 		return ancestry;
+	}
+
+	public synchronized AncestorCount getAncestorCount() {
+		if (ancestorCount != null) return ancestorCount;
+		ancestorCount = AncestorCount.getAncestorCount(record);
+		return ancestorCount;
 	}
 
 	public Individual getFather() { return getIndividual(getAncestry().getFather()); }
