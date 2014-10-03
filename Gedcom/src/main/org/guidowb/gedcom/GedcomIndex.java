@@ -1,6 +1,10 @@
 package org.guidowb.gedcom;
 
-public interface GedcomIndex {
+public abstract class GedcomIndex {
 
-	public void addRecord(GedcomRecord record);
+	Gedcom gedcom;
+	
+	protected <I extends GedcomIndex> I getIndex(Class<I> indexClass) { return gedcom.getIndex(indexClass); }
+
+	public abstract void addRecord(GedcomRecord record);
 }

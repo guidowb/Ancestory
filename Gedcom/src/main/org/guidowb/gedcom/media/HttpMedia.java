@@ -8,7 +8,7 @@ import java.net.URLConnection;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class HttpSource implements MediaSource {
+public class HttpMedia implements Media {
 
 	protected URL translateURL(URL url) throws MalformedURLException { return url; }
 

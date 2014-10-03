@@ -1,35 +1,29 @@
 package org.guidowb.gedcom;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import org.guidowb.gedcom.indices.SourceIndex;
 import org.guidowb.gedcom.indices.HierarchyIndex;
-import org.guidowb.gedcom.media.MediaCache;
 
 public class Gedcom {
 
-	private List<GedcomRecord> recordsInFileOrder = new ArrayList<GedcomRecord>();
 	private List<GedcomIndex> indices = new ArrayList<GedcomIndex>();
-	private Map<String, GedcomRecord> recordsById = new HashMap<String, GedcomRecord>();
-	private MediaCache media = null;
 
 	Gedcom() {
-		// Add the non-optional indices so that they are invoked as the
-		// records are added.
+		// Add non-optional indices so that they are invoked as records are added.
+		addIndex(SourceIndex.class);
 		addIndex(HierarchyIndex.class);
 	}
 
 	public synchronized void addRecord(GedcomRecord record) {
-		recordsInFileOrder.add(record);
-		if (record.getId() != null) recordsById.put(record.getId(), record);
 		for (GedcomIndex index : indices) index.addRecord(record);
 	}
 
 	public synchronized void addIndex(GedcomIndex index) {
+		index.gedcom = this;
 		indices.add(index);
-		for (GedcomRecord record : recordsInFileOrder) index.addRecord(record);
+		for (GedcomRecord record : getIndex(SourceIndex.class).records()) index.addRecord(record);
 	}
 	
 	public <I extends GedcomIndex> I addIndex(Class<I> indexClass) {
@@ -56,15 +50,4 @@ public class Gedcom {
 		}
 		return addIndex(indexClass);
 	}
-	
-	public Iterable<GedcomRecord> records() {
-		return recordsInFileOrder;
-	}
-	
-	public GedcomRecord getRecord(String id) {
-		return recordsById.get(id);
-	}
-	
-	public MediaCache getMedia() { return media; }
-	public void setMedia(MediaCache media) { this.media = media; }
 }

@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
+import org.guidowb.gedcom.indices.SourceIndex;
+
 public class GedcomWriter {
 
 	public static void save(Gedcom gedcom, String filename) throws IOException { save(gedcom, new File(filename)); }
@@ -31,7 +33,7 @@ public class GedcomWriter {
 	
 	private void write(Gedcom gedcom) throws IOException { write(gedcom, false); }
 	private void write(Gedcom gedcom, boolean pretty) throws IOException {
-		for (GedcomRecord record : gedcom.records()) {
+		for (GedcomRecord record : gedcom.getIndex(SourceIndex.class).records()) {
 			String[] lines = record.toString(pretty).split("\n");
 			for (String line : lines) {
 				writer.write(line + "\n");

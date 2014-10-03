@@ -8,24 +8,23 @@ import java.util.Map;
 import org.guidowb.gedcom.GedcomIndex;
 import org.guidowb.gedcom.GedcomRecord;
 
-public class RootRecordIndex extends GedcomIndex {
+public class TagIndex extends GedcomIndex {
 
-	private Map<String, List<GedcomRecord>> rootRecordsByTag = new HashMap<String, List<GedcomRecord>>();
+	private Map<String, List<GedcomRecord>> recordsByTag = new HashMap<String, List<GedcomRecord>>();
 	private List<GedcomRecord> emptyResult = new ArrayList<GedcomRecord>();
 
 	@Override
 	public void addRecord(GedcomRecord record) {
-		if (record.getLevel() > 0) return;
-		List<GedcomRecord> records = rootRecordsByTag.get(record.getTag());
+		List<GedcomRecord> records = recordsByTag.get(record.getTag());
 		if (records == null) {
 			records = new ArrayList<GedcomRecord>();
-			rootRecordsByTag.put(record.getTag(), records);
+			recordsByTag.put(record.getTag(), records);
 		}
 		records.add(record);
 	}
 	
 	public Iterable<GedcomRecord> getRecords(String tag) {
-		Iterable<GedcomRecord> records = rootRecordsByTag.get(tag);
+		Iterable<GedcomRecord> records = recordsByTag.get(tag);
 		if (records != null) return records;
 		else return emptyResult;
 	}

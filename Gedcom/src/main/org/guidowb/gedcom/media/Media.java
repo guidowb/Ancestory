@@ -6,7 +6,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 
-public interface MediaSource {
+public interface Media {
 	public abstract String getCacheName(URL url);
 	public abstract URLConnection open(String url) throws MalformedURLException, IOException, URISyntaxException;
 	public abstract URLConnection open(URL url) throws IOException, URISyntaxException;

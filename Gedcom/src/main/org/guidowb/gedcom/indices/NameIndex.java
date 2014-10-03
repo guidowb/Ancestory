@@ -11,7 +11,7 @@ import org.guidowb.gedcom.GedcomRecord;
 import org.guidowb.gedcom.decorators.Individual;
 import org.guidowb.gedcom.decorators.Name;
 
-public class NameIndex implements GedcomIndex {
+public class NameIndex extends GedcomIndex {
 
 	private SortedMap<Name, Individual> names = new TreeMap<Name, Individual>();
 	private SortedMap<Name, Individual> individuals = new TreeMap<Name, Individual>();

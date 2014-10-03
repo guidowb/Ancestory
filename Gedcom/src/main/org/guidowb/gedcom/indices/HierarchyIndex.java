@@ -6,7 +6,7 @@ import java.util.List;
 import org.guidowb.gedcom.GedcomIndex;
 import org.guidowb.gedcom.GedcomRecord;
 
-public class HierarchyIndex implements GedcomIndex {
+public class HierarchyIndex extends GedcomIndex {
 
 	List<GedcomRecord> stack = new ArrayList<GedcomRecord>();
 

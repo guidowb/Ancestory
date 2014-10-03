@@ -1,10 +1,12 @@
 package org.guidowb.gedcom.test.system;
 
 import java.io.IOException;
+
 import org.guidowb.gedcom.Gedcom;
 import org.guidowb.gedcom.GedcomReader;
 import org.guidowb.gedcom.GedcomRecord;
-import org.guidowb.gedcom.media.MediaCache;
+import org.guidowb.gedcom.indices.MediaIndex;
+import org.guidowb.gedcom.indices.TagIndex;
 
 public class DownloadMedia {
 
@@ -14,9 +16,8 @@ public class DownloadMedia {
 			System.exit(1);
 		}
 		Gedcom gedcom = GedcomReader.load(args[0]);
-		MediaCache media = gedcom.getMedia();
-		for (GedcomRecord record : gedcom.records()) {
-			if (!record.getTag().equals("FILE")) continue;
+		MediaIndex media = gedcom.getIndex(MediaIndex.class);
+		for (GedcomRecord record : gedcom.getIndex(TagIndex.class).getRecords("FILE")) {
 			String url = record.getValue();
 			System.out.println(url);
 			try {

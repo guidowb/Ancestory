@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.guidowb.gedcom.indices.RecordIndex;
+
 public class GedcomRecord {
 
 	private Gedcom gedcom;
@@ -60,24 +62,14 @@ public class GedcomRecord {
 		return fields;
 	}
 
-	private GedcomRecord resolve(GedcomRecord record) {
-		if (record == null) return null;
-		String xref = record.getXref();
-		while (xref != null) {
-			record = gedcom.getRecord(xref);
-			xref = record.getXref();
-		}
-		return record;
-	}
-
 	public GedcomRecord resolveField(String tag) {
-		return resolve(getField(tag));
+		return gedcom.getIndex(RecordIndex.class).resolve(getField(tag));
 	}
 
 	public List<GedcomRecord> resolveFields(String tag) {
 		List<GedcomRecord> fields = new ArrayList<GedcomRecord>();
 		for (GedcomRecord field : getFields(tag)) {
-			fields.add(resolve(field));
+			fields.add(gedcom.getIndex(RecordIndex.class).resolve(field));
 		}
 		return fields;
 	}

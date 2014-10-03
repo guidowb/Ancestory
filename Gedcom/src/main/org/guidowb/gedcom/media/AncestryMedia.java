@@ -3,7 +3,7 @@ package org.guidowb.gedcom.media;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class AncestrySource extends HttpSource {
+public class AncestryMedia extends HttpMedia {
 
 	private String getQueryParam(URL url, String name) {
 		String query = url.getQuery();

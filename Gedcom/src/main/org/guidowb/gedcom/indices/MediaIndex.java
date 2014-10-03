@@ -1,4 +1,4 @@
-package org.guidowb.gedcom.media;
+package org.guidowb.gedcom.indices;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,24 +14,41 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class MediaCache {
+import org.guidowb.gedcom.GedcomIndex;
+import org.guidowb.gedcom.GedcomRecord;
+import org.guidowb.gedcom.media.AncestryMedia;
+import org.guidowb.gedcom.media.HttpMedia;
+import org.guidowb.gedcom.media.Media;
+import org.guidowb.gedcom.indices.SourceIndex;
+
+public class MediaIndex extends GedcomIndex {
 	
-	private static Map<String, MediaSource> sources = new HashMap<String, MediaSource>();
+	private static Map<String, Media> sources = new HashMap<String, Media>();
 	static {
-		sources.put(".ancestry.com", new AncestrySource());
+		sources.put(".ancestry.com", new AncestryMedia());
 	}
 
-	private File directory;
+	@Override
+	public void addRecord(GedcomRecord record) {}	
 	
-	public MediaCache(File directory) {
-		this.directory = directory;
+	private File directory = null;
+
+	private File getCacheDirectory() {
+		if (directory != null) return directory;
+		File sourceFile = getIndex(SourceIndex.class).getSource();
+		File parentDirectory = sourceFile.getParentFile();
+		if (parentDirectory == null) return null;
+		String cacheDirectoryName = sourceFile.getName().replaceAll("\\..*$", "");
+		directory = new File(parentDirectory, cacheDirectoryName);
+		if (!directory.exists()) directory.mkdirs();
+		return directory;
 	}
 
 	public File getFile(String url) throws IOException, URISyntaxException { return getFile(new URL(url)); }
 	public File getFile(URL url) throws IOException, URISyntaxException {
 		File file = getCacheFile(url);
 		final String filename = file.getName();
-		File[] matches = directory.listFiles(new FilenameFilter() {
+		File[] matches = getCacheDirectory().listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File f, String name) {
 				if (name.equals(filename)) return true;
@@ -43,24 +60,23 @@ public class MediaCache {
 		return downloadFile(url);
 	}
 
-	private MediaSource getSource(URL url) {
-		for (Entry<String, MediaSource> source : sources.entrySet()) {
+	private Media getSource(URL url) {
+		for (Entry<String, Media> source : sources.entrySet()) {
 			if (url.getHost().endsWith(source.getKey())) return source.getValue();
 		}
-		return new HttpSource();
+		return new HttpMedia();
 	}
 
 	public File getCacheFile(String url) throws MalformedURLException, URISyntaxException { return getCacheFile(new URL(url)); }
 	public File getCacheFile(URL url) throws URISyntaxException {
 		String filename = getSource(url).getCacheName(url);
-		if (!directory.exists()) directory.mkdirs();
-		File cacheFile = new File(directory, filename);
+		File cacheFile = new File(getCacheDirectory(), filename);
 		return cacheFile;
 	}
 
 	public File downloadFile(String url) throws MalformedURLException, IOException, URISyntaxException { return downloadFile(new URL(url)); }
 	public File downloadFile(URL url) throws IOException, URISyntaxException {
-		MediaSource source = getSource(url);
+		Media source = getSource(url);
 		URLConnection connection = source.open(url);
 		String extension = connection.getContentType().replaceAll("^.*/", "");
 		InputStream input = connection.getInputStream();
