@@ -6,12 +6,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.guidowb.gedcom.indices.HierarchyIndex;
+import org.guidowb.gedcom.media.MediaCache;
 
 public class Gedcom {
 
 	private List<GedcomRecord> recordsInFileOrder = new ArrayList<GedcomRecord>();
 	private List<GedcomIndex> indices = new ArrayList<GedcomIndex>();
 	private Map<String, GedcomRecord> recordsById = new HashMap<String, GedcomRecord>();
+	private MediaCache media = null;
 
 	Gedcom() {
 		// Add the non-optional indices so that they are invoked as the
@@ -62,4 +64,7 @@ public class Gedcom {
 	public GedcomRecord getRecord(String id) {
 		return recordsById.get(id);
 	}
+	
+	public MediaCache getMedia() { return media; }
+	public void setMedia(MediaCache media) { this.media = media; }
 }
