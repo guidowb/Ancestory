@@ -74,13 +74,6 @@ public class GedcomRecord {
 		return fields;
 	}
 
-	public String getName() {
-		GedcomRecord nameField = getField("NAME");
-		if (nameField == null) return null;
-		String name = nameField.getValue().replaceAll("/", "");
-		return name;
-	}
-
 	@SuppressWarnings("rawtypes")
 	private Map<Class, GedcomDecorator> decorators = new HashMap<Class, GedcomDecorator>();
 

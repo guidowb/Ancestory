@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.guidowb.gedcom.Gedcom;
 import org.guidowb.gedcom.GedcomReader;
 import org.guidowb.gedcom.decorators.Individual;
+import org.guidowb.gedcom.decorators.Lifespan;
 import org.guidowb.gedcom.decorators.Name;
 import org.guidowb.gedcom.indices.NameIndex;
 
@@ -18,7 +19,10 @@ public class ListIndividuals {
 		Gedcom gedcom = GedcomReader.load(args[0]);
 		for (Individual individual : gedcom.getIndex(NameIndex.class).individuals()) {
 			Name name = individual.getName();
-			System.out.println(name.getCanonical());
+			Lifespan lifespan = individual.getLifespan();
+			System.out.print(name.getCanonical());
+			if (!lifespan.toString().isEmpty()) System.out.print(" (" + lifespan.toString() + ")");
+			System.out.println();
 			for (Name alias : name.aliases()) {
 				System.out.println("    " + alias.getCanonical());
 			}

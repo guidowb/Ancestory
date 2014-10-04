@@ -16,7 +16,7 @@ public class PlaceIndex extends GedcomIndex {
 		if (!record.getTag().equals("PLAC")) return;
 		Place place = findPlace(record.getValue());
 		GedcomRecord reference = record.getContainer();
-		if (reference != null) place.addReference(record.getContainer());
+		if (reference != null) place.addEvent(record.getContainer());
 	}
 
 	private synchronized Place findPlace(String name) {

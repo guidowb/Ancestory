@@ -7,28 +7,14 @@ import org.guidowb.gedcom.GedcomDecorator;
 import org.guidowb.gedcom.GedcomRecord;
 
 public class Individual extends GedcomDecorator {
-	private Name name = null;
-	private Ancestry ancestry = null;
+
 	private List<Individual> children = null;
-	private AncestorCount ancestorCount = null;
 
-	public synchronized Name getName() {
-		if (name != null) return name;
-		name = Name.getName(record);
-		return name;
-	}
-
-	private synchronized Ancestry getAncestry() {
-		if (ancestry != null) return ancestry;
-		ancestry = Ancestry.getAncestry(record);
-		return ancestry;
-	}
-
-	public synchronized AncestorCount getAncestorCount() {
-		if (ancestorCount != null) return ancestorCount;
-		ancestorCount = AncestorCount.getAncestorCount(record);
-		return ancestorCount;
-	}
+	public Name getName() { return Name.getName(record); }
+	public String getDescription() { return Description.getDescription(record).toString(); }
+	public Lifespan getLifespan() { return Lifespan.getLifespan(record); }
+	private Ancestry getAncestry() { return Ancestry.getAncestry(record); }
+	public AncestorCount getAncestorCount() { return AncestorCount.getAncestorCount(record); }
 
 	public Individual getFather() { return getIndividual(getAncestry().getFather()); }
 	public Individual getMother() { return getIndividual(getAncestry().getMother()); }
