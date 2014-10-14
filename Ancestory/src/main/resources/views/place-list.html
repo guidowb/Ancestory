@@ -1,6 +1,8 @@
 <ul class="list-group">
-	<li class="list-group-item" ng-repeat="place in places">
-		<span ng-click="toggle(place)">{{place.name}}</span>
+	<li class="list-group-item" ng-repeat="place in places" ng-click="toggle(place)">
+		<span class="glyphicon glyphicon-chevron-right" ng-show="!place.show"></span>
+		<span class="glyphicon glyphicon-chevron-down" ng-show="place.show"></span>
+		<span>{{place.name}}</span>
 		<ul ng-show="place.show">
 			<li ng-repeat="event in place.events">{{event.description}}</li>
 		</ul>
