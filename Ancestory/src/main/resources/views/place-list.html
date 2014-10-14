@@ -1,5 +1,8 @@
 <ul class="list-group">
 	<li class="list-group-item" ng-repeat="place in places">
-		{{place.name}}
+		<span ng-click="toggle(place)">{{place.name}}</span>
+		<ul ng-show="place.show">
+			<li ng-repeat="event in place.events">{{event.description}}</li>
+		</ul>
 	</li>
 </ul>

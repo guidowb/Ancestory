@@ -14,17 +14,22 @@ public class PlaceIndex extends GedcomIndex {
 	@Override
 	public void addRecord(GedcomRecord record) {
 		if (!record.getTag().equals("PLAC")) return;
-		Place place = findPlace(record.getValue());
+		Place place = getPlace(record.getValue());
 		GedcomRecord reference = record.getContainer();
 		if (reference != null) place.addEvent(record.getContainer());
 	}
 
-	private synchronized Place findPlace(String name) {
+	private synchronized Place getPlace(String name) {
 		name = normalize(name);
 		Place place = placesByName.get(name);
 		if (place != null) return place;
 		place = new Place(name);
 		placesByName.put(name, place);
+		return place;
+	}
+	
+	public Place findPlace(String name) {
+		Place place = placesByName.get(name);
 		return place;
 	}
 	
