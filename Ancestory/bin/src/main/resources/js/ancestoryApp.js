@@ -13,10 +13,6 @@ ancestoryApp.config(
 				templateUrl: 'views/name-list.html',
 				controller: 'namelistController'
 			}).
-			when('/places', {
-				templateUrl: 'views/place-list.html',
-				controller: 'placelistController'
-			}).
 			otherwise({
 				redirectTo: '/names'
 			});
