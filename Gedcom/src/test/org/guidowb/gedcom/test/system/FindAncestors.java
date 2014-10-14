@@ -8,6 +8,8 @@ import org.guidowb.gedcom.GedcomReader;
 import org.guidowb.gedcom.decorators.Individual;
 import org.guidowb.gedcom.indices.NameIndex;
 import org.guidowb.gedcom.indices.NameIndex.Match;
+import org.guidowb.gedcom.layouts.AncestorTree;
+import org.guidowb.gedcom.layouts.AncestorTree.Branch;
 
 public class FindAncestors {
 
@@ -30,9 +32,10 @@ public class FindAncestors {
 			System.exit(1);
 		}
 		Individual individual = matches.get(0).individual;
-		System.out.println("Ancestors of " + individual.getName().getNormalized() + ":");
-		while ((individual = individual.getFather()) != null) {
-			System.out.println("    " + individual.getName().getNormalized());
+
+		final String[] prefixes = { "    ", "  .-", "  | ", "  | ", "  `-" };
+		for (Branch branch : AncestorTree.create(individual, prefixes).branches()) {
+			System.out.println(branch.prefix() + branch.individual().getName().getNormalized());
 		}
 	}
 }
