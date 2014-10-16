@@ -7,18 +7,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class WebServer {
 
-	@RequestMapping(value="/", method=RequestMethod.GET)
-	public String getHomePage() {
-		return "redirect:/ancestory";
-	}
-
-	@RequestMapping(value="/ancestory", method=RequestMethod.GET)
-	public String getMainPage() {
-		return "ancestory";
-	}
-
-	@RequestMapping(value="/ancestory/**", method=RequestMethod.GET)
-	public String getSubPage() {
+	@RequestMapping(value={"/", "/ancestory", "/ancestory/**"}, method=RequestMethod.GET)
+	public String getAppPage() {
 		return "ancestory";
 	}
 
