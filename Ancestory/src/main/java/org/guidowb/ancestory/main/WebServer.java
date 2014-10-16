@@ -9,6 +9,16 @@ public class WebServer {
 
 	@RequestMapping(value="/", method=RequestMethod.GET)
 	public String getHomePage() {
+		return "redirect:/ancestory";
+	}
+
+	@RequestMapping(value="/ancestory", method=RequestMethod.GET)
+	public String getMainPage() {
+		return "ancestory";
+	}
+
+	@RequestMapping(value="/ancestory/**", method=RequestMethod.GET)
+	public String getSubPage() {
 		return "ancestory";
 	}
 
