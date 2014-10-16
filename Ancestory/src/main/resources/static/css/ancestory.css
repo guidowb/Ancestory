@@ -10,8 +10,3 @@ body { padding-top: 70px; }
 .navbar-brand {
 	margin-top: -6px;
 }
-
-.navbar-nav>li {
-	float:none;
-    display:inline-block;
-}

@@ -6,6 +6,8 @@
 	<base href="/ancestory"/>
 	<title>Ancestory</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+	<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.24/angular.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.24/angular-route.min.js"></script>
 	<script src="js/ancestoryApp.js"></script>
@@ -19,11 +21,23 @@
 	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 		<div class="navbar-header">
 			<a class="navbar-brand" href="#"><span class="ancestory-icon"></span><span>Ancestory</span></a>
-			<ul class="nav navbar-nav">
-				<li><a href="/ancestory/names">Names</a></li>
-				<li><a href="/ancestory/places">Places</a></li>
-			</ul>
 		</div>
+		<ul class="nav navbar-nav">
+			<li><a href="/ancestory/names">Names</a></li>
+			<li><a href="/ancestory/places">Places</a></li>
+		</ul>
+		<ul class="nav navbar-nav pull-right">
+			<li class="dropdown">
+				<a id="account-dropdown" class="dropdown-toggle" data-toggle="dropdown">
+					<span class="glyphicon glyphicon-user"></span>
+				</a>
+				<div class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="account-dropdown">
+					<form th:action="@{/logout}" method="post">
+						<button class="btn btn-danger" type="submit">Log out</button>
+					</form>
+				</div>
+			</li>
+		</ul>
 	</nav>
 
 	<div ng-view=""></div>
