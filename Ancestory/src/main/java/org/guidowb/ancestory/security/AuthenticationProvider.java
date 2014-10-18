@@ -1,8 +1,9 @@
-package org.guidowb.ancestory.main;
+package org.guidowb.ancestory.security;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -11,8 +12,21 @@ import org.springframework.security.core.GrantedAuthority;
 
 public class AuthenticationProvider implements org.springframework.security.authentication.AuthenticationProvider {
 
+	private static final String DEFAULT_USERNAME = "admin";
+	private static final String DEFAULT_PASSWORD = "admin";
+
+	@Autowired
+	private UserRepository users;
+
 	private boolean validateUsernamePassword(String username, String password) {
-		if (username.equals("user") && password.equals("password")) return true;
+		User user = users.findByUsername(username);
+		if (user != null) return user.isPassword(password);
+		if (username.equalsIgnoreCase(DEFAULT_USERNAME) && password.equals(DEFAULT_PASSWORD)) {
+			// Allow default admin login only as long as there are no actual users
+			// in the database.
+			// TODO - Limit the granted authority to only create a new admin
+			if (users.count() == 0) return true;
+		}
 		return false;
 	}
 

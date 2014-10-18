@@ -1,4 +1,4 @@
-package org.guidowb.ancestory.main;
+package org.guidowb.ancestory.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

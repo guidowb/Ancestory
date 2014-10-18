@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 public class Application {
 
 	private static Gedcom gedcom;
-	
+
     public static void main(String[] args) throws IOException {
 		if (args.length < 1) {
 			System.out.println("Usage: AncestoryServer <gedfile>");
