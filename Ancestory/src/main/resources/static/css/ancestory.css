@@ -1,3 +1,5 @@
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+
 body { padding-top: 70px; }
 
 .ancestory-icon {
@@ -9,4 +11,8 @@ body { padding-top: 70px; }
 
 .navbar-brand {
 	margin-top: -6px;
+}
+
+input.ng-invalid.ng-dirty {
+	background-color: #FA787E;
 }

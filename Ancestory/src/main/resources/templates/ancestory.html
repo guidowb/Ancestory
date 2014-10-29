@@ -3,16 +3,19 @@
 <head>
 	<meta charset="utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<meta http-equiv="set-cookie" th:content="'XSRF-TOKEN='+${_csrf.token}+';path=/'" />
+	<meta http-equiv="set-cookie" th:content="'XSRF-HEADER='+${_csrf.headerName}+';path=/'" />
 	<base href="/ancestory"/>
 	<title>Ancestory</title>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
-	<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.24/angular.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.24/angular-route.min.js"></script>
+	<link rel="stylesheet" href="external/css/bootstrap.min.css"/>
+	<script src="external/js/angular.min.js"></script>
+	<script src="external/js/angular-route.min.js"></script>
+	<script src="external/js/ui-bootstrap-tpls.min.js"></script>
 	<script src="js/ancestoryApp.js"></script>
 	<script src="js/namelistController.js"></script>
 	<script src="js/placelistController.js"></script>
+	<script src="js/userlistController.js"></script>
+	<script src="js/userdialogController.js"></script>
 	<link rel="stylesheet" href="css/ancestory.css"/>
 	
 </head>
@@ -25,6 +28,7 @@
 		<ul class="nav navbar-nav">
 			<li><a href="/ancestory/names">Names</a></li>
 			<li><a href="/ancestory/places">Places</a></li>
+			<li><a href="/ancestory/users">Users</a></li>
 		</ul>
 		<ul class="nav navbar-nav pull-right">
 			<li class="dropdown">

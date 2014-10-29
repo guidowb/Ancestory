@@ -1,6 +1,7 @@
 var ancestoryApp = angular.module('ancestoryApp',
 	[
 	 	'ngRoute',
+	 	'ui.bootstrap',
 	 	'ancestoryControllers'
 	]
 );
@@ -17,10 +18,22 @@ ancestoryApp.config(
 					templateUrl: 'views/place-list.html',
 					controller: 'placelistController'
 				}).
+				when('/ancestory/users', {
+					templateUrl: 'views/user-list.html',
+					controller: 'userlistController'
+				}).
 				otherwise({
 					redirectTo: '/ancestory/names'
 				});
 			$locationProvider.html5Mode(true);
+		}
+	]
+);
+
+ancestoryApp.run(
+	['$http',
+	 	function($http) {
+			$http.defaults.xsrfHeaderName = 'X-CSRF-TOKEN';
 		}
 	]
 );

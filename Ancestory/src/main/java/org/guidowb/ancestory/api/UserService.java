@@ -4,6 +4,7 @@ import org.guidowb.ancestory.security.User;
 import org.guidowb.ancestory.security.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,13 +27,13 @@ public class UserService {
 	}
 
 	@RequestMapping(value="/api/users", method=RequestMethod.POST)
-	public void createUser(User user) {
+	public void createUser(@RequestBody User user) {
 		validateUser(user);
 		users.save(user);
 	}
 
 	@RequestMapping(value="/api/users/{username}", method=RequestMethod.PUT)
-	public void updateUser(@PathVariable String username, User update) {
+	public void updateUser(@PathVariable String username, @RequestBody User update) {
 		User user = users.findByUsername(username);
 		if (user == null) ; // TODO - throw not found
 		user.update(update);
