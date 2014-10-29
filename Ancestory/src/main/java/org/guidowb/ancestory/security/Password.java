@@ -48,7 +48,7 @@ public class Password
 		}
     }
 
-    private static boolean timeConstantCompare(byte[] a, byte[] b)
+    public static boolean timeConstantCompare(byte[] a, byte[] b)
     {
         int diff = a.length ^ b.length;
         for(int i = 0; i < a.length && i < b.length; i++) {
@@ -57,7 +57,7 @@ public class Password
         return diff == 0;
     }
 
-    private static byte[] fromHex(String hex)
+    public static byte[] fromHex(String hex)
     {
         byte[] bytes = new byte[hex.length() / 2];
         for(int i = 0; i < bytes.length; i++) {
@@ -66,11 +66,11 @@ public class Password
         return bytes;
     }
 
-    private static String toHex(byte[] bytes)
+    public static String toHex(byte[] bytes)
     {
         String hex = "";
-        for (int i = 0; i < bytes.length; i += 2) {
-        	Integer bite = (bytes[i] << 8) | bytes[i+1];
+        for (int i = 0; i < bytes.length; i++) {
+        	Integer bite = bytes[i] & 0x0FF;
         	hex += String.format("%02x", bite);
         }
         return hex;
