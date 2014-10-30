@@ -14,5 +14,11 @@ body { padding-top: 70px; }
 }
 
 input.ng-invalid.ng-dirty {
-	background-color: #FA787E;
+	border: 1px solid red;
+}
+
+.validation-error {
+	font-size: small;
+	color: red;
+	float: right;
 }
